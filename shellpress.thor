@@ -95,15 +95,16 @@ class Plugin < Thor
   require "open-uri"
   include Thor::Actions
 
-  desc 'install PLUGIN', 'install plugin'
+  desc 'install PLUGIN', 'install plugin. [PLUGIN] can be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory'
   method_option :version, :type => :string, :aliases => "-v"
   def install(plugin)
     version = options[:version]
 
     if plugin =~ URI::regexp
-      # TO DO
-      #invoke :download, [plugin]
-      #invoke :activate, [plugin]
+      invoke :download, [plugin]
+      filename = File.basename(URI.parse(plugin).path)
+      name = filename.split(".").first
+      invoke :activate, [name]
     else
       if version
         begin
@@ -221,22 +222,23 @@ class Theme < Thor
     run php
   end
 
-  desc 'install NAME', 'downloads and activates theme'
+  desc 'install THEME', '[THEME] can either be a URL or a theme name. If a theme name is supplied, it will be downloaded from the WordPress Theme Directory'
   method_option :version, :type => :string, :aliases => "-v"
   def install(theme)
     version = options[:version]
 
     if theme =~ URI::regexp
-      # TO DO
-      #invoke :download, [theme]
-      #invoke :switch, [theme]
+      invoke :download, [theme]
+      filename = File.basename(URI.parse(theme).path)
+      name = filename.split(".").first
+      invoke :switch, [name]
     else
       if version
         url = "http://wordpress.org/extend/themes/download/#{theme}.#{version}.zip"
       else
         begin
           response = open("http://themes.svn.wordpress.org/#{theme}/").read
-          version = response.match(/<a href=\"([\d+\.]+)\/">(.*)\/<\/a><\/li>\n <\/ul>/)[1]
+          version = response.match(%r|<a href="([\d+.]+)/">(.*)/</a></li>\n </ul>|)[1]
           url = "http://wordpress.org/extend/themes/download/#{theme}.#{version}.zip"
         rescue
           abort "Error: Invalid theme #{theme}"

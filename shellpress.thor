@@ -101,8 +101,9 @@ class Plugin < Thor
     version = options[:version]
 
     if plugin =~ URI::regexp
-      invoke :download, [plugin]
-      invoke :activate, [plugin]
+      # TO DO
+      #invoke :download, [plugin]
+      #invoke :activate, [plugin]
     else
       if version
         begin
@@ -220,12 +221,40 @@ class Theme < Thor
     run php
   end
 
-  # TODO
   desc 'install NAME', 'downloads and activates theme'
+  method_option :version, :type => :string, :aliases => "-v"
   def install(theme)
-    #dl
-    #move to theme dir
-    #invoke switch, [theme]
+    version = options[:version]
+
+    if theme =~ URI::regexp
+      # TO DO
+      #invoke :download, [theme]
+      #invoke :switch, [theme]
+    else
+      if version
+        url = "http://wordpress.org/extend/themes/download/#{theme}.#{version}.zip"
+      else
+        begin
+          response = open("http://themes.svn.wordpress.org/#{theme}/").read
+          version = response.match(/<a href=\"([\d+\.]+)\/">(.*)\/<\/a><\/li>\n <\/ul>/)[1]
+          url = "http://wordpress.org/extend/themes/download/#{theme}.#{version}.zip"
+        rescue
+          abort "Error: Invalid theme #{theme}"
+        end
+      end
+      invoke :download, [url]
+      invoke :switch, [theme]
+    end
+  end
+
+  desc 'download URL', 'downloads theme from URL'
+  def download(url)
+    zip = File.basename(URI.parse(url).path)
+    theme = zip.split(".").first
+    run "wget #{url}", :verbose => false
+    run "unzip #{zip}", :verbose => false
+    remove_file "#{zip}", :verbose => false
+    run "mv #{theme} wp-content/themes/"
   end
 
   desc 'delete NAME', 'removes theme'

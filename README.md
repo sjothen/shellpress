@@ -19,6 +19,7 @@ This is a work in progress with lots of changes and improvements to come.
     thor theme:delete NAME   # removes theme
     thor theme:install NAME  # downloads and activates theme
     thor theme:switch NAME   # switches from the current theme to new theme
+    thor theme:download URL  # downloads theme from URL
 
 ####wordpress
     thor wordpress:clean     # cleanup and delete files

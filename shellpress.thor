@@ -280,3 +280,31 @@ class Theme < Thor
   end
 
 end
+
+class Posts < Thor
+  include Thor::Actions
+
+  desc 'delete [POST ID/SLUG]', 'deletes a post, attachment, or page of the specified ID or path (slug)'
+  method_option :force, :type => :boolean, :aliases => "-f", :default => true
+  method_option :type, :type => :string, :aliases => "-t", :default => 'post'
+  def delete(id)
+    force = options[:force]
+    type = options[:type]
+
+    php = "<?php include 'wp-load.php';"
+
+    if id =~ /\d+/
+      php << "wp_delete_post(#{id}, #{force});"
+    else
+      php << "$post = get_page_by_path('#{id}', OBJECT, '#{type}');"
+      php << "if ($post) wp_delete_post($post->ID, #{force});"
+    end
+
+    php << "?>"
+
+    File.open("temp.php", "w") {|f| f.write(php)}
+    run "php -q temp.php"
+    remove_file "temp.php", :verbose => false
+
+  end
+end

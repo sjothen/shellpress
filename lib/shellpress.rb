@@ -126,6 +126,7 @@ class Database < Thor
       tables += %w(wp_usermeta wp_users)
     end
 
+    # doesnt work yet since there's no way to retrieve config settings
     begin
       wp = Mysql.real_connect(mysql['host'], mysql['user'], mysql['pass'])
       tables.each do |t|

@@ -1,0 +1,12 @@
+--- 
+mysql: 
+  pass: wptest123
+  db: wptestinstall
+  host: localhost
+  user: wptest
+wp: 
+  title: test blog
+  url: test.rootstheme.com 
+  pass: test123
+  user: wpuser
+  email: scott.walkinshaw@gmail.com 

@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "shellpress"
   gem.homepage = "http://github.com/swalkinshaw/shellpress"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Manage WordPress from the command line}
+  gem.description = %Q{shellpress is a command line WordPress manager. It provides commands for common WordPress administration actions and lets you easily script them}
   gem.email = "scott.walkinshaw@gmail.com"
   gem.authors = ["Scott Walkinshaw"]
   # dependencies defined in Gemfile

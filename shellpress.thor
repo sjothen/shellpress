@@ -7,7 +7,13 @@ class Wordpress < Thor
   end
 
   desc "download", "download and unpack WordPress"
-  method_option :version, :type => :string, :aliases => "-v" 
+  long_desc <<-DESC
+    Downloads WordPress from the official site. By default, the latest stable version will be downloaded.
+    The downloaded archive will be unpacked and the working directory will become the WordPress root directory.
+    Use --version to specify a version to download.
+  DESC
+  method_option :version, :type => :string, :aliases => %w(-v),
+    :desc => "Version of WordPress to download. Any version found in the release archive with a tar.gz link is valid (http://wordpress.org/download/release-archive/)."
   def download
     version = options[:version]
 
@@ -26,41 +32,51 @@ class Wordpress < Thor
   end
 
   desc "install", "download and install WordPress"
-  method_option :config, :type => :string, :aliases => "-c"
-  method_option :output, :type => :string, :aliases => "-o"
+  long_desc <<-DESC
+    Installs and downloads WordPress using the working directory as the WordPress root.
+    If the "wp-content" folder already exists, it's assumed that WordPress has already been downloaded so only the install occurs.
+    By default, this command will prompt you to enter the needed settings. Use --config (-c) [file] to specify a YAML config file.
+    To save your settings into a config for future use, use --output (-o) [file] to write a YAML file.
+    Before using this command, the WordPress root needs to be accessible via a URL and a MySQL database needs to exist with a valid user to access it.
+  DESC
+  method_option :config, :type => :string, :aliases => %w(-c),
+    :desc => "Loads settings from config file specified. Config must be in YAML format."
+  method_option :skip_config, :type => :boolean, :aliases => %w(-s),
+    :desc => "If a config.yml file is found in the working directory, it will automatically be used unless you specify this flag."
+  method_option :output, :type => :string, :aliases => %w(-o),
+    :desc => "Writes a config file with the settings you chose during install."
   def install
     config = options[:config]
     output = options[:output]
-    unless File.exists?("wordpress")
+
+    unless File.exists?("wp-content")
       invoke :download
     end
 
     if config
       say "*** Loading settings from #{config}", :green
       settings = YAML.load_file(config)
-    elsif File.exists?("config.yml")
+    elsif File.exists?("config.yml") && !options[:skip_config]
       say "*** Loading settings from config.yml", :green
       settings = YAML.load_file("config.yml")
     else
-      settings = { 'mysql' => {}, 'wp' => {} }
+      settings = { "mysql" => {}, "wp" => {} }
 
-      settings["mysql"]["host"] = ask "mysql host: "
-      settings["mysql"]["db"] = ask "mysql db: "
-      settings["mysql"]["user"] = ask "mysql user: "
-      settings["mysql"]["pass"] = ask "mysql pass: "
-      settings["wp"]["title"]= ask "WP Title: "
-      settings["wp"]["user"] = ask "WP User: "
-      settings["wp"]["pass"] = ask "WP Pass: "
-      settings["wp"]["email"] = ask "WP Email: "
-      settings["wp"]["url"] = ask "WP URL: "
+      settings["mysql"]["host"] = ask "MySQL host: "
+      settings["mysql"]["db"] = ask "MySQL db: "
+      settings["mysql"]["user"] = ask "MySQL user: "
+      settings["mysql"]["pass"] = ask "MySQL pass: "
+      settings["wp"]["title"]= ask "WordPress Title: "
+      settings["wp"]["user"] = ask "WordPress User: "
+      settings["wp"]["pass"] = ask "WordPress Pass: "
+      settings["wp"]["email"] = ask "WordPress Email: "
+      settings["wp"]["url"] = ask "WordPress URL: "
 
-      unless output
-        output = "config.yml"
-      end
-
-      File.open(output, "w") do |out|
-        say "*** #{output} written", :green
-        YAML.dump(settings, out)
+      if output
+        File.open(output, "w") do |out|
+          say "*** #{output} written", :green
+          YAML.dump(settings, out)
+        end
       end
     end
 
@@ -76,18 +92,105 @@ class Wordpress < Thor
 
   end
 
-  # TODO
-  desc 'clean', 'cleanup and delete files'
-  method_option :all => false, :aliases => '-a'
+  desc "clean", "delete the contents of the working directory"
+  long_desc <<-DESC
+    Cleans up the working directory by deleting everything in it. By default, this excludes any *.yml config files.
+    To delete everything including *.yml files, use --all (a).
+  DESC
+  method_option :all => false, :aliases => %w(-a),
+    :desc => "Delete everything including *.yml files"
   def clean
-    all = options[:all]
-    if all
-      #delete everything in current dir
+    if options[:all]
+      FileUtils.rm_rf "."
     else
-      #just delete WP dir?
+      Dir.glob("*").reject{|file| ['.yml'].include?(File.extname(file)) }
     end
   end
 
+end
+
+class Database < Thor
+  require "mysql"
+
+  desc "reset", "resets by emptying all WordPress tables"
+  long_desc <<-DESC
+    Empties all WordPress tables by truncating. By default, all tables will be cleared.
+    To preserve the user tables, use --exclude_users (-e)
+  DESC
+  method_option :exclude_users => false, :aliases => %w(-e),
+    :desc => "Excludes wp_usermeta and wp_users from being cleared"
+  def reset
+
+    tables = %w(wp_commentmeta wp_comments wp_links wp_options wp_postmeta wp_posts wp_terms wp_term_relationships wp_term_taxonomy)
+    if options[:exclude_users]
+      tables += %w(wp_usermeta wp_users)
+    end
+
+    begin
+      wp = Mysql.real_connect(mysql['host'], mysql['user'], mysql['pass'])
+      tables.each do |t|
+        wp.query("TRUNCATE TABLE #{t}")
+      end
+    rescue Mysql::Error => e
+      abort e
+    ensure
+      wp.close if wp
+    end
+
+  end
+end
+
+class Users < Thor
+  require "tempfile"
+
+  desc "add [USER]", "creates a new WordPress user"
+  long <<-DESC
+    Creates a new WordPress user account. Do not try using this for existing users.
+  DESC
+  method_option :role, :type => :string, :aliases => %w(-r),
+    :desc => "User role. Valid roles and descriptions can be found here (http://codex.wordpress.org/Roles_and_Capabilities)."
+  method_option :email, :type => :string, :aliases => %w(-e),
+    :desc => "User's email address. Their account info will be emailed here."
+  method_option :url, :type => :string, :aliases => %w(-u),
+    :desc => "User's URL"
+  method_option :first_name, :type => :string, :aliases => %w(-f),
+    :desc => "User's first name"
+  method_option :last_name, :type => :string, :aliases => %w(-l),
+    :desc => "User's last name"
+  method_option :ssl, :type => :string, :aliases => %w(-s), :default => '0'
+    :desc => "Force SSL"
+  method_option :password, :type => :string, :aliases => %w(-p),
+    :desc => "User's password"
+  def add(user)
+    php = <<-PHP
+      <?php
+      include 'wp-load.php';
+      require_once( ABSPATH . WPINC . '/registration.php');
+      if (!is_object(get_user_by('slug', '#{user}'))) {
+        wp_insert_user(array(
+          'user_login' => '#{user}',
+          'role' => '#{option[:role]}',
+          'user_email' => '#{option[:email]}',
+          'user_url' => '#{option[:url]}',
+          'first_name' => '#{option[:first_name]}',
+          'last_name' => '#{option[:last_name]}',
+          'use_ssl' => '#{option[:ssl]}',
+          'user_pass' => '#{option[:password]}'
+        ));
+      }
+      ?>
+    PHP
+
+    file = Tempfile.open(["useradd", ".php"])
+    begin
+      file.write(php)
+      run "php -q #{file.path}"
+    ensure
+      file.close
+      file.delete
+    end
+
+  end
 end
 
 class Plugin < Thor
@@ -95,8 +198,9 @@ class Plugin < Thor
   require "open-uri"
   include Thor::Actions
 
-  desc 'install PLUGIN', 'install plugin. [PLUGIN] can be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory'
-  method_option :version, :type => :string, :aliases => "-v"
+  desc "install PLUGIN", "install plugin. [PLUGIN] can be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory"
+  method_option :version, :type => :string, :aliases => %w(-v),
+    :desc => "Version of the plugin to install. Valid versions can be found on the plugin download page (http://wordpress.org/extend/plugins/[plugin]/download/) or in the SVN repository (http://plugins.svn.wordpress.org/[plugin]/tags/)"
   def install(plugin)
     version = options[:version]
 
@@ -134,7 +238,7 @@ class Plugin < Thor
 
   end
 
-  desc 'download URL', 'downloads plugin from URL'
+  desc "download URL", "downloads plugin from URL"
   def download(url)
     zip = File.basename(URI.parse(url).path)
     plugin = zip.split(".").first
@@ -144,7 +248,7 @@ class Plugin < Thor
     run "mv #{plugin} wp-content/plugins/"
   end
 
-  desc 'activate NAME', 'activate plugin'
+  desc "activate NAME", "activate plugin"
   def activate(name)
     base = "wp-content/plugins"
     php = "php -r \"include 'wp-load.php';"
@@ -160,7 +264,7 @@ class Plugin < Thor
   end
 
 
-  desc 'delete NAME', 'delete plugin'
+  desc "delete NAME", "delete plugin"
   def delete(name)
     base = "wp-content/plugins"
     php = "php -r \"include 'wp-load.php';"
@@ -176,7 +280,7 @@ class Plugin < Thor
     run php
   end
 
-  desc 'deactivate NAME', 'deactivate plugin'
+  desc "deactivate NAME", "deactivate plugin"
   def deactivate(name)
     base = "wp-content/plugins"
     php = "php -r \"include 'wp-load.php';"
@@ -200,7 +304,7 @@ class Theme < Thor
   require "fileutils"
   include Thor::Actions
 
-  desc 'switch NAME', 'switches from the current theme to new theme'
+  desc "switch NAME", "switches from the current theme to new theme"
   def switch(theme)
     base = "wp-content/themes/#{theme}"
 
@@ -222,8 +326,9 @@ class Theme < Thor
     run php
   end
 
-  desc 'install THEME', '[THEME] can either be a URL or a theme name. If a theme name is supplied, it will be downloaded from the WordPress Theme Directory'
-  method_option :version, :type => :string, :aliases => "-v"
+  desc "install THEME", "[THEME] can either be a URL or a theme name. If a theme name is supplied, it will be downloaded from the WordPress Theme Directory"
+  method_option :version, :type => :string, :aliases => %w(-v),
+    :desc => "Version of the theme to install. Valid version numbers can be found in the theme's SVN repository (http://themes.svn.wordpress.org/[theme]/)"
   def install(theme)
     version = options[:version]
 
@@ -249,7 +354,7 @@ class Theme < Thor
     end
   end
 
-  desc 'download URL', 'downloads theme from URL'
+  desc "download URL", "downloads theme from URL"
   def download(url)
     zip = File.basename(URI.parse(url).path)
     theme = zip.split(".").first
@@ -259,8 +364,9 @@ class Theme < Thor
     run "mv #{theme} wp-content/themes/"
   end
 
-  desc 'delete NAME', 'removes theme'
-  method_option :force, :type => :boolean, :aliases => "-f"
+  desc "delete NAME", "removes theme"
+  method_option :force, :type => :boolean, :aliases => %w(-f),
+    :desc => "Force delete theme without confirmation"
   def delete(theme)
     path = "wp-content/themes/#{theme}"
 
@@ -284,9 +390,11 @@ end
 class Posts < Thor
   include Thor::Actions
 
-  desc 'delete [POST ID/SLUG]', 'deletes a post, attachment, or page of the specified ID or path (slug)'
-  method_option :force, :type => :boolean, :aliases => "-f", :default => true
-  method_option :type, :type => :string, :aliases => "-t", :default => 'post'
+  desc "delete [POST ID/SLUG]", "deletes a post, attachment, or page of the specified ID or path (slug)"
+  method_option :force, :type => :boolean, :aliases => %w(-f), :default => true,
+    :desc => "Force delete post bypassing the Trash"
+  method_option :type, :type => :string, :aliases => %w(-t), :default => "post",
+    :desc => "The type of object to delete. Default valid types: post, page, attachment, revision, nav_menu. Custom post types are also supported"
   def delete(id)
     force = options[:force]
     type = options[:type]

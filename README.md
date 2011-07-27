@@ -1,8 +1,8 @@
-= shellpress
+# shellpress
 
 Manage WordPress from the command-line.
 
-== Commands
+## Commands
 
   `thor plugin:activate NAME    # activate plugin`
   `thor plugin:deactivate NAME  # deactivate plugin`
@@ -23,7 +23,7 @@ Manage WordPress from the command-line.
 
   `thor database:reset      # Empties all WordPress tables`
 
-== Copyright
+## Copyright
 
 Copyright (c) 2011 Scott Walkinshaw. See LICENSE.txt for
 further details.

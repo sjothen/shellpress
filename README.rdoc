@@ -1,16 +1,27 @@
 = shellpress
 
-Description goes here.
+Manage WordPress from the command-line.
 
-== Contributing to shellpress
- 
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
-* Fork the project
-* Start a feature/bugfix branch
-* Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+== Commands
+
+thor plugin:activate NAME    # activate plugin
+thor plugin:deactivate NAME  # deactivate plugin
+thor plugin:delete NAME      # delete plugin
+thor plugin:download URL     # downloads plugin from URL
+thor plugin:install PLUGIN   # install plugin
+
+thor theme:delete NAME   # removes theme
+thor theme:install NAME  # downloads and activates theme
+thor theme:switch NAME   # switches from the current theme to new theme
+thor theme:download URL  # downloads theme from URL
+
+thor wordpress:clean     # cleanup and delete files
+thor wordpress:download  # download and unpack WordPress
+thor wordpress:install   # download and install WordPress
+
+thor users:add           # Creates a new WordPress user
+
+thor database:reset      # Empties all WordPress tables
 
 == Copyright
 

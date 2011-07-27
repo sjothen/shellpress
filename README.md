@@ -4,24 +4,52 @@ Manage WordPress from the command-line.
 
 ## Commands
 
-  `thor plugin:activate NAME    # activate plugin`
-  `thor plugin:deactivate NAME  # deactivate plugin`
-  `thor plugin:delete NAME      # delete plugin`
-  `thor plugin:download URL     # downloads plugin from URL`
-  `thor plugin:install PLUGIN   # install plugin`
+Shellpress comes with a variety of different commands that help you efficiently manage your wordpress installations. Try one of the following commands:
 
-  `thor theme:delete NAME   # removes theme`
-  `thor theme:install NAME  # downloads and activates theme`
-  `thor theme:switch NAME   # switches from the current theme to new theme`
-  `thor theme:download URL  # downloads theme from URL`
+### Plugins
+Activate a plugin:
+  `thor plugin:activate NAME`
 
-  `thor wordpress:clean     # cleanup and delete files`
-  `thor wordpress:download  # download and unpack WordPress`
-  `thor wordpress:install   # download and install WordPress`
+Deactivate a plugin:
+  `thor plugin:deactivate NAME`
 
-  `thor users:add           # Creates a new WordPress user`
+Delete a plugin:
+  `thor plugin:delete NAME`
 
-  `thor database:reset      # Empties all WordPress tables`
+Download a new plugin from URL:
+  `thor plugin:download URL`
+
+Install a new plugin:
+  `thor plugin:install PLUGIN`
+
+### Themes
+Delete a theme:
+  `thor theme:delete NAME`
+
+Install a theme:
+  `thor theme:install NAME`
+
+Switch from current theme to a new theme:
+  `thor theme:switch NAME`
+
+Download a new theme:
+  `thor theme:download URL`
+
+### Other commands
+Cleanup and delete files:
+  `thor wordpress:clean`
+
+Download and unpack Wordpress:
+  `thor wordpress:download`
+
+Download and install Wordpress:
+  `thor wordpress:install`
+
+Add a new user:
+  `thor users:add`
+
+Clear all Wordpress tables:
+  `thor database:reset`
 
 ## Copyright
 

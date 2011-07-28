@@ -1,5 +1,6 @@
+require "yaml"
+
 class Wordpress < Thor
-  require "yaml"
   include Thor::Actions
 
   def self.source_root

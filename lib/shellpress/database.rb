@@ -1,6 +1,6 @@
-class Database < Thor
-  require "mysql"
+require "mysql"
 
+class Database < Thor
   desc "reset", "resets by emptying all WordPress tables"
   long_desc <<-DESC
     Empties all WordPress tables by truncating. By default, all tables will be cleared.

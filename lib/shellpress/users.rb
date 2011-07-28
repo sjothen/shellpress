@@ -1,6 +1,6 @@
-class Users < Thor
-  require "tempfile"
+require "tempfile"
 
+class Users < Thor
   desc "add [USER]", "creates a new WordPress user"
   long_desc <<-DESC
     Creates a new WordPress user account. Do not try using this for existing users.

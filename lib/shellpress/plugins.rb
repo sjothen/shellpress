@@ -1,6 +1,7 @@
+require "uri"
+require "open-uri"
+
 class Plugins < Thor
-  require "uri"
-  require "open-uri"
   include Thor::Actions
 
   desc "install PLUGIN", "install plugin. [PLUGIN] can be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory"

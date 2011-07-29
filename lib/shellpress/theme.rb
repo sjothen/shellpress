@@ -2,7 +2,8 @@ require "uri"
 require "open-uri"
 require "fileutils"
 
-class Themes < Thor
+class Shellpress::Theme < Shellpress::Thor
+  ORDER = 1
   include Thor::Actions
 
   desc "switch NAME", "switches from the current theme to new theme"

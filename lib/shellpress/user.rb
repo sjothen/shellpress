@@ -1,6 +1,7 @@
 require "tempfile"
 
-class Users < Thor
+class Shellpress::User < Shellpress::Thor
+  ORDER = 4
   desc "add [USER]", "creates a new WordPress user"
   long_desc <<-DESC
     Creates a new WordPress user account. Do not try using this for existing users.

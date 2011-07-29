@@ -1,6 +1,7 @@
 require "yaml"
 
-class Wordpress < Thor
+class Shellpress::Wordpress < Shellpress::Thor
+  ORDER = 5
   include Thor::Actions
 
   def self.source_root

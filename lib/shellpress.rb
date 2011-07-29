@@ -1,7 +1,12 @@
 require "thor"
-require "shellpress/database.rb"
-require "shellpress/plugins.rb"
-require "shellpress/posts.rb"
-require "shellpress/themes.rb"
-require "shellpress/users.rb"
-require "shellpress/wordpress.rb"
+
+module Shellpress; end
+
+require "shell/thor"
+require "shellpress/database"
+require "shellpress/plugin"
+require "shellpress/post"
+require "shellpress/theme"
+require "shellpress/user"
+require "shellpress/wordpress"
+require "shellpress/cli"

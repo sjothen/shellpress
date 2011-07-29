@@ -45,7 +45,7 @@ class Shellpress::CLI < Shellpress::Thor
       # Case 1:
       # Either `shellpress help' or `shellpress' called. Print out help for all commands.
       ks = Shellpress.constants.map { |k| Shellpress.const_get(k) }
-      ks.sort_by! { |k| k::ORDER }
+      ks = ks.sort_by { |k| k::ORDER }
       # Don't call help on CLI or infinite recursion occurs
       pref = prefix(self.class)
       ks.reject { |k| self.class == k || k == Shellpress::Thor }.each do |klass|

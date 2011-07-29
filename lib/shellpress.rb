@@ -2,7 +2,7 @@ require "thor"
 
 module Shellpress; end
 
-require "shell/thor"
+require "shellpress/thor"
 require "shellpress/database"
 require "shellpress/plugin"
 require "shellpress/post"

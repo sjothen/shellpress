@@ -7,6 +7,10 @@ class Shellpress::Theme < Shellpress::Thor
   include Thor::Actions
 
   desc "switch NAME", "switches from the current theme to new theme"
+  long_desc <<-DESC
+    Switches (activates) to [NAME] theme. [NAME] is the theme directory name in wp-content/themes/.
+    Child themes are also supported.
+  DESC
   def switch(theme)
     base = "wp-content/themes/#{theme}"
 
@@ -28,7 +32,11 @@ class Shellpress::Theme < Shellpress::Thor
     run php
   end
 
-  desc "install THEME", "[THEME] can either be a URL or a theme name. If a theme name is supplied, it will be downloaded from the WordPress Theme Directory"
+  desc "install THEME", "download and installs a WordPress theme"
+  long_desc <<-DESC
+    [THEME] can either be a URL or a theme name. If a theme name is supplied, it will be downloaded from the WordPress Theme Directory (http://wordpress.org/extend/themes/).
+    If [THEME] is a URL, it needs to be a ZIP file that contains a directory.
+  DESC
   method_option :version, :type => :string, :aliases => %w(-v),
     :desc => "Version of the theme to install. Valid version numbers can be found in the theme's SVN repository (http://themes.svn.wordpress.org/[theme]/)"
   def install(theme)
@@ -57,6 +65,10 @@ class Shellpress::Theme < Shellpress::Thor
   end
 
   desc "download URL", "downloads theme from URL"
+  long_desc <<-DESC
+    Downloads a theme from the URL provided. URL needs be a ZIP file that contains 1 directory.
+    ZIP will be expanded and deleted. The theme will be moved to wp-content/themes/.
+  DESC
   def download(url)
     zip = File.basename(URI.parse(url).path)
     theme = zip.split(".").first
@@ -67,6 +79,9 @@ class Shellpress::Theme < Shellpress::Thor
   end
 
   desc "delete NAME", "removes theme"
+  long_desc <<-DESC
+    Deletes a theme. [NAME] is the name of the theme directory in wp-content/themes/.
+  DESC
   method_option :force, :type => :boolean, :aliases => %w(-f),
     :desc => "Force delete theme without confirmation"
   def delete(theme)

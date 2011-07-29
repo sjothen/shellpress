@@ -5,7 +5,7 @@ class Shellpress::Database < Shellpress::Thor
   desc "reset", "resets by emptying all WordPress tables"
   long_desc <<-DESC
     Empties all WordPress tables by truncating. By default, all tables will be cleared.
-    To preserve the user tables, use --exclude_users (-e)
+    To preserve the user tables, use --exclude-users (-e)
   DESC
   method_option :exclude_users, :type => :boolean, :aliases => %w(-e),
     :desc => "Excludes wp_usermeta and wp_users tables from being cleared"

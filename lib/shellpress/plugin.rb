@@ -5,7 +5,11 @@ class Shellpress::Plugin < Shellpress::Thor
   ORDER = 0
   include Thor::Actions
 
-  desc "install PLUGIN", "install plugin. [PLUGIN] can be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory"
+  desc "install PLUGIN", "install plugin"
+  long_desc <<-DESC
+    [PLUGIN] can either be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory (http://wordpress.org/extend/plugins/).
+    If [PLUGIN] is a URL, it needs to be a ZIP file that contains either a directory or a single php file.
+  DESC
   method_option :version, :type => :string, :aliases => %w(-v),
     :desc => "Version of the plugin to install. Valid versions can be found on the plugin download page (http://wordpress.org/extend/plugins/[plugin]/download/) or in the SVN repository (http://plugins.svn.wordpress.org/[plugin]/tags/)"
   def install(plugin)
@@ -45,6 +49,10 @@ class Shellpress::Plugin < Shellpress::Thor
   end
 
   desc "download URL", "downloads plugin from URL"
+  long_desc <<-DESC
+    Downloads and extracts a plugin to the default plugin directory (wp-content/plugins/). [URL] must be a ZIP archive.
+    The downloaded ZIP file will be deleted after it's expanded.
+  DESC
   def download(url)
     zip = File.basename(URI.parse(url).path)
     plugin = zip.split(".").first
@@ -55,6 +63,10 @@ class Shellpress::Plugin < Shellpress::Thor
   end
 
   desc "activate NAME", "activate plugin"
+  long_desc <<-DESC
+    Activates a plugin from the default plugin directory (wp-content/plugins/).
+    [NAME] is either the name of the directory, or the plugin file without ".php"
+  DESC
   def activate(name)
     base = "wp-content/plugins"
     php = "php -r \"include 'wp-load.php';"
@@ -70,6 +82,10 @@ class Shellpress::Plugin < Shellpress::Thor
   end
 
   desc "delete NAME", "delete plugin"
+  long_desc <<-DESC
+    Deletes a plugin from the default plugin directory (wp-content/plugins/).
+    [NAME] is either the name of the directory, or the plugin file without ".php"
+  DESC
   def delete(name)
     base = "wp-content/plugins"
     php = "php -r \"include 'wp-load.php';"
@@ -86,6 +102,10 @@ class Shellpress::Plugin < Shellpress::Thor
   end
 
   desc "deactivate NAME", "deactivate plugin"
+  long_desc <<-DESC
+    Deactivates a plugin from the default plugin directory (wp-content/plugins/).
+    [NAME] is either the name of the directory, or the plugin file without ".php"
+  DESC
   def deactivate(name)
     base = "wp-content/plugins"
     php = "php -r \"include 'wp-load.php';"

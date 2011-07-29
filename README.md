@@ -44,30 +44,43 @@ Command: wordpress clean
 
 Command: plugin install
 
-    $ shellpress plugin install PLUGIN   # install plugin. [PLUGIN] can be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory
-
-      Description:
-        install plugin. [PLUGIN] can be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory
+    $ shellpress plugin install PLUGIN   # install plugin
 
       Options:
         -v, [--version=VERSION]  # Version of the plugin to install. Valid versions can be found on the plugin download page (http://wordpress.org/extend/plugins/[plugin]/download/) or in the SVN repository (http://plugins.svn.wordpress.org/[plugin]/tags/)
+
+      Description:
+        [PLUGIN] can either be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory 
+        (http://wordpress.org/extend/plugins/). If [PLUGIN] is a URL, it needs to be a ZIP file that contains either a directory or a single php file.
 
 Command: plugin activate
 
     $ shellpress plugin activate NAME    # activate plugin
 
+      Description:
+        Activates a plugin from the default plugin directory (wp-content/plugins/). [NAME] is either the name of the directory, or the plugin file without ".php"
+
 Command: plugin deactivate
 
     $ shellpress plugin deactivate NAME  # deactivate plugin
+
+      Description:
+        Deactivates a plugin from the default plugin directory (wp-content/plugins/). [NAME] is either the name of the directory, or the plugin file without ".php"
 
 Command: plugin delete
 
     $ shellpress plugin delete NAME      # delete plugin
 
+      Description:
+        Deletes a plugin from the default plugin directory (wp-content/plugins/). [NAME] is either the name of the directory, or the plugin file without ".php"
+
 Command: plugin download
 
     $ shellpress plugin download URL     # downloads plugin from URL
 
+      Description:
+        Downloads and extracts a plugin to the default plugin directory (wp-content/plugins/). [URL] must be a ZIP archive. The downloaded ZIP file will be deleted after it's 
+        expanded.
 
 ### Themes
 
@@ -75,11 +88,12 @@ Command: theme install
 
     $ shellpress theme install THEME  # [THEME] can either be a URL or a theme name. If a theme name is supplied, it will be downloaded from the WordPress Theme Directory
 
-      Description:
-        [THEME] can either be a URL or a theme name. If a theme name is supplied, it will be downloaded from the WordPress Theme Directory
-
       Options:
         -v, [--version=VERSION]  # Version of the theme to install. Valid version numbers can be found in the theme's SVN repository (http://themes.svn.wordpress.org/[theme]/)
+
+      Description:
+        [THEME] can either be a URL or a theme name. If a theme name is supplied, it will be downloaded from the WordPress Theme Directory 
+        (http://wordpress.org/extend/themes/). If [THEME] is a URL, it needs to be a ZIP file that contains a directory.
 
 Command: theme delete
 
@@ -88,14 +102,24 @@ Command: theme delete
       Options:
         -f, [--force]  # Force delete theme without confirmation
 
+      Description:
+        Deletes a theme. [NAME] is the name of the theme directory in wp-content/themes/.
+
 Command: theme switch
 
     $ shellpress theme switch NAME    # switches from the current theme to new theme
+
+      Description:
+        Switches (activates) to [NAME] theme. [NAME] is the theme directory name in wp-content/themes/. Child themes are also supported.
 
 Command: theme download
 
     $ shellpress theme download URL   # downloads theme from URL
 
+      Description:
+        Downloads a theme from the URL provided. URL needs be a ZIP file that contains 1 directory. ZIP will be expanded and deleted. The theme will be moved to 
+        wp-content/themes/.
+        j
 ### Users
 
 Command: user add

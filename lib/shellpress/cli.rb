@@ -47,28 +47,18 @@ class Shellpress::CLI < Shellpress::Thor
       ks = Shellpress.constants.map { |k| Shellpress.const_get(k) }
       ks = ks.sort_by { |k| k::ORDER }
       # Don't call help on CLI or infinite recursion occurs
-      pref = prefix(self.class)
       ks.reject { |k| self.class == k || k == Shellpress::Thor }.each do |klass|
         print_table_for_class(klass)
       end
-      say "Use `#{pref} help [COMMAND] [SUBCOMMAND]' to learn more."
-    elsif commands.size == 1
-      # Case 2:
-      # `shellpress help command'
+      say "Use `#{prefix(self.class)} help [COMMAND] [SUBCOMMAND]' to learn more."
+    else
       cmd = commands[0]
       klass = constantize(cmd)
       unless klass
         say "Unknown command `#{cmd}'."
       else
-        print_table_for_class(klass)
+        klass.new.help(*commands[1..-1])
       end
-    else
-      # Case 3:
-      # `shellpress help command subcommand'
-      cmd, subcmd= commands[0], commands[1]
-      klass = constantize(cmd)
-      klass.new.help(*commands[1..-1])
     end
   end
 end
-

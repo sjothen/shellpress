@@ -8,6 +8,8 @@ Shellpress comes with a variety of different commands that help you efficiently 
 
 ### WordPress
 
+Command: wordpress download
+
     $ shellpress wordpress download  # download and unpack WordPress
 
       Options:
@@ -16,6 +18,7 @@ Shellpress comes with a variety of different commands that help you efficiently 
       Description:
         Downloads WordPress from the official site. By default, the latest stable version will be downloaded. The downloaded archive will be unpacked and the working directory will become the WordPress root directory. Use --version to specify a version to download.
 
+Command: wordpress install
 
     $ shellpress wordpress install   # download and install WordPress
 
@@ -27,6 +30,8 @@ Shellpress comes with a variety of different commands that help you efficiently 
       Description:
         Installs and downloads WordPress using the working directory as the WordPress root. If the "wp-content" folder already exists, it's  assumed that WordPress has already been downloaded so only the install occurs. By default, this command will prompt you to enter the needed settings. Use --config (-c) [file] to specify a YAML config file. To save your settings into a config for future use, use --output (-o) [file] to write a YAML file. Before using this command, the WordPress root needs to be accessible via a URL and a MySQL database needs to exist with a valid user to access it.
 
+Command: wordpress clean
+
     $ shellpress wordpress clean
 
       Options:
@@ -37,6 +42,8 @@ Shellpress comes with a variety of different commands that help you efficiently 
 
 ### Plugins
 
+Command: plugin install
+
     $ shellpress plugin install PLUGIN   # install plugin. [PLUGIN] can be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory
 
       Description:
@@ -45,16 +52,26 @@ Shellpress comes with a variety of different commands that help you efficiently 
       Options:
         -v, [--version=VERSION]  # Version of the plugin to install. Valid versions can be found on the plugin download page (http://wordpress.org/extend/plugins/[plugin]/download/) or in the SVN repository (http://plugins.svn.wordpress.org/[plugin]/tags/)
 
+Command: plugin activate
+
     $ shellpress plugin activate NAME    # activate plugin
+
+Command: plugin deactivate
 
     $ shellpress plugin deactivate NAME  # deactivate plugin
 
+Command: plugin delete
+
     $ shellpress plugin delete NAME      # delete plugin
+
+Command: plugin download
 
     $ shellpress plugin download URL     # downloads plugin from URL
 
 
 ### Themes
+
+Command: theme install
 
     $ shellpress theme install THEME  # [THEME] can either be a URL or a theme name. If a theme name is supplied, it will be downloaded from the WordPress Theme Directory
 
@@ -64,17 +81,24 @@ Shellpress comes with a variety of different commands that help you efficiently 
       Options:
         -v, [--version=VERSION]  # Version of the theme to install. Valid version numbers can be found in the theme's SVN repository (http://themes.svn.wordpress.org/[theme]/)
 
+Command: theme delete
+
     $ shellpress theme delete NAME    # removes theme
 
       Options:
         -f, [--force]  # Force delete theme without confirmation
 
+Command: theme switch
 
     $ shellpress theme switch NAME    # switches from the current theme to new theme
+
+Command: theme download
 
     $ shellpress theme download URL   # downloads theme from URL
 
 ### Users
+
+Command: user add
 
     $ shellpress user add [USER]
 
@@ -93,6 +117,8 @@ Shellpress comes with a variety of different commands that help you efficiently 
 
 
 ### Database
+
+Command: database reset
 
     $ shellpress database reset
 

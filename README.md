@@ -4,7 +4,7 @@ Manage WordPress from the command-line.
 
 ## Commands
 
-Shellpress comes with a variety of different commands that help you efficiently manage your wordpress installations. Try one of the following commands:
+Shellpress comes with a variety of different commands that help you efficiently manage your WordPress installations. Try one of the following commands:
 
 ### WordPress
 
@@ -127,6 +127,12 @@ Command: database reset
 
       Description:
         Empties all WordPress tables by truncating. By default, all tables will be cleared. To preserve the user tables, use --exclude_users (-e)
+
+## Config
+
+See `config.yml.sample` for an example of an installation config.yml.
+
+Usage: `shellpress wordpress install -c config.yml`
 
 ## Copyright
 

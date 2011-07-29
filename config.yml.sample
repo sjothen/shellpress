@@ -1,0 +1,12 @@
+--- 
+mysql: 
+  pass: password 
+  db: wp_db
+  host: localhost
+  user: wp_user
+wp: 
+  title: Blog Title 
+  url: blog.example.com
+  pass: password
+  user: admin
+  email: email@example.com

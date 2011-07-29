@@ -1,6 +1,7 @@
 require "mysql"
 
-class Database < Thor
+class Shellpress::Database < Shellpress::Thor
+  ORDER = 3
   desc "reset", "resets by emptying all WordPress tables"
   long_desc <<-DESC
     Empties all WordPress tables by truncating. By default, all tables will be cleared.

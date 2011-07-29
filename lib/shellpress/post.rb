@@ -1,7 +1,8 @@
-class Posts < Thor
+class Shellpress::Post < Shellpress::Thor
+  ORDER = 2
   include Thor::Actions
 
-  desc "delete [POST ID/SLUG]", "deletes a post, attachment, or page of the specified ID or path (slug)"
+  desc "delete [POST_ID/SLUG]", "deletes a post, attachment, or page of the specified ID or path (slug)"
   method_option :force, :type => :boolean, :aliases => %w(-f), :default => true,
     :desc => "Force delete post bypassing the Trash"
   method_option :type, :type => :string, :aliases => %w(-t), :default => "post",

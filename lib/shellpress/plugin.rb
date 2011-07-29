@@ -1,7 +1,8 @@
 require "uri"
 require "open-uri"
 
-class Plugins < Thor
+class Shellpress::Plugin < Shellpress::Thor
+  ORDER = 0
   include Thor::Actions
 
   desc "install PLUGIN", "install plugin. [PLUGIN] can be a URL or a plugin name. If a plugin name is supplied, it will be downloaded from the WordPress Plugin Directory"
@@ -41,7 +42,6 @@ class Plugins < Thor
       invoke :download, [url]
       invoke :activate, [plugin]
     end
-
   end
 
   desc "download URL", "downloads plugin from URL"
@@ -68,7 +68,6 @@ class Plugins < Thor
     end
     run php
   end
-
 
   desc "delete NAME", "delete plugin"
   def delete(name)
@@ -101,6 +100,4 @@ class Plugins < Thor
     end
     run php
   end
-
 end
-

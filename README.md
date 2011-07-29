@@ -119,7 +119,7 @@ Command: theme download
       Description:
         Downloads a theme from the URL provided. URL needs be a ZIP file that contains 1 directory. ZIP will be expanded and deleted. The theme will be moved to 
         wp-content/themes/.
-        j
+
 ### Users
 
 Command: user add
